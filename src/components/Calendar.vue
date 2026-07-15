@@ -52,10 +52,14 @@
         </div>
       </div>
 
-      <!-- 권역 색상 범례 -->
+      <!-- 권역 색상 범례 (마우스를 올리면 소속 구 표시) -->
       <div class="legend">
-        <div class="legend-item" v-for="z in zoneList" :key="z">
+        <div class="legend-item" v-for="z in zoneList" :key="z" tabindex="0">
           <span class="legend-dot" :style="{background: zoneColor(z)}"></span>{{ z }}
+          <span class="legend-tip" role="tooltip">
+            <b :style="{color: zoneColor(z)}">{{ z }}</b>
+            <span class="legend-tip-gu">{{ zoneDistricts(z).join(' · ') }}</span>
+          </span>
         </div>
       </div>
 
@@ -232,6 +236,8 @@ export default {
     }
     function zoneColor(z){ return ZONE_COLOR[z] || ZONE_ETC; }
     const zoneList = Object.keys(ZONE_DISTRICTS);
+    // 범례 툴팁용: 권역에 속한 구 목록
+    function zoneDistricts(z){ return ZONE_DISTRICTS[z] || []; }
 
     const eventsInMonth = computed(()=>{
       const startOfMonth = new Date(year.value, month.value, 1);
@@ -420,7 +426,7 @@ export default {
     return {
       title, prevMonth, nextMonth, cells, visibleSegments, overflowMarkers,
       segmentStyle, markerStyle,
-      colorForRegion, zoneColor, zoneList, textColor, longRunEvents, selectedEvent, openEvent, closeEvent, formatYMD, imgSrc, mapUrl,
+      colorForRegion, zoneColor, zoneList, zoneDistricts, textColor, longRunEvents, selectedEvent, openEvent, closeEvent, formatYMD, imgSrc, mapUrl,
       dayEvents, openMarker, closeDay, openFromDay,
       gridRef, barsContainerStyle
     };
@@ -445,8 +451,14 @@ export default {
 
 /* legend */
 .legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
-.legend-item{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--ink-soft)}
+.legend-item{position:relative;display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--ink-soft);cursor:help;outline:none}
 .legend-dot{width:12px;height:12px;border-radius:4px;flex:0 0 auto}
+/* 범례 툴팁: 소속 구 목록 */
+.legend-tip{position:absolute;bottom:calc(100% + 8px);left:0;z-index:20;width:max-content;max-width:240px;padding:9px 12px;background:var(--surface);border:1px solid var(--line-strong);border-radius:10px;box-shadow:var(--shadow-sm),0 6px 18px rgba(0,0,0,.12);opacity:0;visibility:hidden;transform:translateY(4px);transition:opacity .14s,transform .14s;pointer-events:none}
+.legend-tip::after{content:'';position:absolute;top:100%;left:16px;border:6px solid transparent;border-top-color:var(--surface)}
+.legend-tip b{display:block;font-size:12px;font-weight:800;margin-bottom:3px}
+.legend-tip-gu{display:block;font-size:12px;font-weight:600;line-height:1.55;color:var(--ink)}
+.legend-item:hover .legend-tip,.legend-item:focus-visible .legend-tip{opacity:1;visibility:visible;transform:translateY(0)}
 
 /* 상시·장기 공연 목록 (달력과 분리된 별도 박스) */
 .calendar .longrun{margin-top:22px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
