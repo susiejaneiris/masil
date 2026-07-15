@@ -13,16 +13,16 @@
           <p>가볼 곳·축제·맛집 정보가 SNS 계정과 알고리즘 안에 갇혀 있어요. 마실은 <b>로그인도, 팔로우도 필요 없이</b> 서울 곳곳의 정보를 지도와 달력으로 펼쳐 봅니다.</p>
           <div class="cta">
             <button class="btn btn-p" @click="$emit('go-map','')">🗺️ 지도로 둘러보기</button>
-            <button class="btn btn-g" @click="$emit('go-cal','')">📅 축제 일정 보기</button>
+            <button class="btn btn-g" @click="$emit('go-cal','')">📅 축제·행사 일정 보기</button>
           </div>
         </template>
         <template v-else>
           <div class="kicker">권역 둘러보기 · 대표 명소 {{ cur.place }}</div>
           <h1>{{ REG_NAME[cur.region] }}, <em>오늘 어디로</em> 마실 갈까요?</h1>
-          <p>가볼 곳 <b>{{ STATS.byreg[cur.region].toLocaleString() }}곳</b> · 축제 <b>{{ festByReg[cur.region] }}건</b>. {{ REG_NAME[cur.region] }}의 명소와 일정을 지도·달력으로 만나보세요.</p>
+          <p>가볼 곳 <b>{{ STATS.byreg[cur.region].toLocaleString() }}곳</b> · 축제·행사 <b>{{ festByReg[cur.region] }}건</b>. {{ REG_NAME[cur.region] }}의 명소와 일정을 지도·달력으로 만나보세요.</p>
           <div class="cta">
             <button class="btn btn-p" @click="$emit('go-map',cur.region)">🗺️ {{ REG_NAME[cur.region] }} 지도로 둘러보기</button>
-            <button class="btn btn-g" @click="$emit('go-cal',cur.region)">📅 {{ REG_NAME[cur.region] }} 축제 일정 보기</button>
+            <button class="btn btn-g" @click="$emit('go-cal',cur.region)">📅 {{ REG_NAME[cur.region] }} 축제·행사 일정 보기</button>
           </div>
         </template>
       </div>

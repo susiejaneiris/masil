@@ -82,7 +82,7 @@
           <button class="rcard" v-for="(r,i) in feats" :key="i" @click="goMap(i)" :style="{'--rc':REG_PAL[i]}">
             <span class="rc-top"></span>
             <span class="rc-name">{{ r.name }}</span>
-            <span class="rc-nums"><b>{{ r.count.toLocaleString() }}</b>곳 · 축제 {{ r.fest }}건</span>
+            <span class="rc-nums"><b>{{ r.count.toLocaleString() }}</b>곳 · 축제·행사 {{ r.fest }}건</span>
           </button>
         </div>
       </section>
