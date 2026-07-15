@@ -1,0 +1,10 @@
+node_modules
+dist
+.DS_Store
+*.local
+.vite
+
+# 환경변수 (API 키)
+.env
+.env.*
+!.env.example

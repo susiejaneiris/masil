@@ -1,0 +1,14 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# SPA: 새로고침·직접접근 시에도 index.html 반환
+# (/.netlify/functions/* 는 함수가 우선 처리되므로 이 규칙에 걸리지 않음)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

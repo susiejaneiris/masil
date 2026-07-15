@@ -1,0 +1,20 @@
+{
+  "name": "masil-integrated",
+  "version": "1.0.0",
+  "description": "마실 · 통합 (Vue 3 + Vite). 홈·캘린더=보라팀, 히어로 캐러셀·지도·커뮤니티=파랑팀.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "vite": "^6.0.7"
+  }
+}
