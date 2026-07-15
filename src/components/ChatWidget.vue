@@ -38,7 +38,7 @@ export default {
     botAvatar: AVATARS[4],   // 보라색 블롭 캐릭터 (수면안대)
     // 키는 서버(Netlify Function)에만 있다. 클라이언트는 키 없이 함수로 요청만 보낸다.
     messages:JSON.parse(localStorage.getItem('masil_chat')||'[]'),
-    suggestions:['종로구 가볼 만한 곳','이번 가을 서울 축제','강남 데이트 코스','아이랑 갈 문화시설'],
+    suggestions:['종로구 가볼 만한 곳','이번 가을 서울 축제','강남 데이트 코스','아이랑 갈 문화시설','한강 근처 나들이','비 오는 날 실내 코스'],
   }},
   methods:{
     toggle(){ this.open=!this.open; this.$nextTick(this.scrollDown); },
