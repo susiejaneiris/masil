@@ -26,7 +26,7 @@
            <span class="ln">마실에서는 <b>로그인, 팔로우 없이도</b> 서울 곳곳의 정보를 지도와 달력으로 펼쳐 볼 수 있어요.</span></p>
         <div class="cta">
           <button class="btn btn-solid" @click="go('map')">지도로 둘러보기</button>
-          <button class="btn btn-ghost" @click="go('cal')">축제 일정 보기</button>
+          <button class="btn btn-ghost" @click="go('cal')">축제·행사 일정 보기</button>
         </div>
       </section>
 
