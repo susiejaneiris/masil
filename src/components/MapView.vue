@@ -14,7 +14,21 @@
       </div>
     </div>
     <div class="map-wrap">
-      <div id="map"></div>
+      <div class="map-col">
+        <div id="map"></div>
+        <!-- 권역 경계 범례 (마우스를 올리면 소속 구 표시 · 클릭 시 해당 권역만) -->
+        <div class="map-legend">
+          <div class="mlg-title">권역</div>
+          <button class="mlg-item" v-for="z in zones" :key="z.key"
+                  :class="{on:String(selRegion)===String(z.idx)}" @click="toggleRegion(z.idx)">
+            <span class="mlg-dot" :style="{background:z.color}"></span>{{ z.label }}
+            <span class="mlg-tip" role="tooltip">
+              <b :style="{color:z.color}">{{ z.label }}</b>
+              <span class="mlg-gu">{{ z.gu.join(' · ') }}</span>
+            </span>
+          </button>
+        </div>
+      </div>
       <div class="list">
         <div class="list-head" v-if="filtered.length">총 {{ filtered.length.toLocaleString() }}곳<span v-if="filtered.length>150"> · 150곳 표시</span></div>
         <div class="list-empty" v-if="!filtered.length">조건에 맞는 장소가 없어요</div>
@@ -66,7 +80,12 @@
 
 <script>
 import L from 'leaflet'
-import { DATA, STATS, CAT_COLOR, REGBOUNDS } from '../lib.js'
+import { DATA, STATS, CAT_COLOR, REGBOUNDS, ZONES, GU2ZONE } from '../lib.js'
+import SEOUL_GU from '../data/seoul-gu.json'
+
+// 권역 키 순서(= STATS.regions 인덱스 순서)와 범례 데이터
+const ZONE_KEYS = Object.keys(ZONES);
+const ZONE_LEGEND = ZONE_KEYS.map((k,i)=>({ key:k, idx:i, label:ZONES[k].label, color:ZONES[k].color, gu:ZONES[k].gu }));
 
 export default {
   name: 'MapView',
@@ -76,11 +95,12 @@ export default {
   },
   data(){ return {
     DATA, CAT_COLOR, CAT_NAME: STATS.cats, REG_NAME: STATS.regions,
+    zones: ZONE_LEGEND,
     mapReady:false,
     selRegion: this.region ?? '',
     cats: this.cat==null ? [0,1,2,3,4,6,7] : [this.cat],
     q:'', detail:null, loc:null,
-    map:null, markerLayer:null, miniMap:null,
+    map:null, markerLayer:null, boundaryLayer:null, miniMap:null,
   }},
   computed:{
     filtered(){
@@ -95,7 +115,7 @@ export default {
     region(v){ this.selRegion = v ?? ''; },
     cat(v){ this.cats = v==null ? [0,1,2,3,4,6,7] : [v]; },
     filtered(){ if(this.mapReady) this.renderMap(); },
-    selRegion(){ this.zoomToRegion(); },
+    selRegion(){ this.zoomToRegion(); this.restyleBoundaries(); },
     loc(v){ if(v) this.$nextTick(()=>this.buildMini(v)); else if(this.miniMap){ this.miniMap.remove(); this.miniMap=null; } },
   },
   methods:{
@@ -105,8 +125,27 @@ export default {
       this.map=L.map('map',{preferCanvas:true,scrollWheelZoom:true}).setView([37.5665,126.978],11);
       L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
         {attribution:'© OpenStreetMap © CARTO',maxZoom:19,subdomains:'abcd'}).addTo(this.map);
+      this.renderBoundaries();                    // 권역 경계(마커보다 아래)
       this.markerLayer=L.layerGroup().addTo(this.map); this.renderMap(); this.zoomToRegion();
     },
+    // 자치구 경계를 권역 색으로 채워 5개 권역을 시각화
+    renderBoundaries(){
+      this.boundaryLayer=L.geoJSON(SEOUL_GU,{
+        interactive:false,                         // 클릭은 마커로 통과
+        style:(f)=>this.zoneStyle(f),
+      }).addTo(this.map);
+    },
+    zoneStyle(f){
+      const zk=GU2ZONE[f.properties.name];
+      const color=zk?ZONES[zk].color:'#9aa0ab';
+      const idx=ZONE_KEYS.indexOf(zk);
+      const all=this.selRegion===''||this.selRegion===null;
+      const active=all||Number(this.selRegion)===idx;
+      return { color, weight:active?1.4:0.5, opacity:active?0.85:0.2,
+               fillColor:color, fillOpacity:active?0.13:0.03 };
+    },
+    restyleBoundaries(){ if(this.boundaryLayer) this.boundaryLayer.setStyle((f)=>this.zoneStyle(f)); },
+    toggleRegion(idx){ this.selRegion = String(this.selRegion)===String(idx) ? '' : idx; },
     renderMap(){
       if(!this.markerLayer) return;
       this.markerLayer.clearLayers();
@@ -162,7 +201,22 @@ select.reg.picked{background:var(--accent-soft);border-color:#CFC4EE;color:var(-
 
 /* 지도 */
 .map-wrap{display:grid;grid-template-columns:1fr 348px;gap:16px;align-items:stretch}
+.map-col{position:relative}
 #map{height:600px;border-radius:var(--r);border:1px solid var(--line);box-shadow:var(--shadow-sm);z-index:1}
+
+/* 권역 경계 범례 (지도 위 오버레이) */
+.map-legend{position:absolute;top:12px;right:12px;z-index:500;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:9px 10px;display:flex;flex-direction:column;gap:2px;min-width:96px}
+.map-legend .mlg-title{font-size:11px;font-weight:800;color:var(--muted);padding:1px 6px 4px;letter-spacing:.02em}
+.mlg-item{position:relative;display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--ink-soft);background:none;border:none;border-radius:8px;padding:5px 6px;text-align:left;cursor:pointer;transition:.13s}
+.mlg-item:hover{background:var(--paper);color:var(--ink)}
+.mlg-item.on{background:var(--accent-soft);color:var(--accent-deep)}
+.mlg-dot{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
+/* 소속 구 툴팁 */
+.mlg-tip{position:absolute;top:50%;right:calc(100% + 10px);transform:translateY(-50%) translateX(4px);z-index:20;width:max-content;max-width:220px;padding:9px 12px;background:var(--surface);border:1px solid var(--line-strong);border-radius:10px;box-shadow:var(--shadow),0 6px 18px rgba(0,0,0,.12);opacity:0;visibility:hidden;transition:opacity .14s,transform .14s;pointer-events:none}
+.mlg-tip::after{content:'';position:absolute;top:50%;left:100%;transform:translateY(-50%);border:6px solid transparent;border-left-color:var(--surface)}
+.mlg-tip b{display:block;font-size:12px;font-weight:800;margin-bottom:3px}
+.mlg-gu{display:block;font-size:12px;font-weight:600;line-height:1.55;color:var(--ink)}
+.mlg-item:hover .mlg-tip,.mlg-item:focus-visible .mlg-tip{opacity:1;visibility:visible;transform:translateY(-50%) translateX(0)}
 .list{height:600px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding-right:2px}
 .list-head{font-size:12.5px;color:var(--muted);font-weight:700;padding:2px 2px 0}
 .list-empty{color:var(--muted);font-size:14px;text-align:center;padding:40px 10px}
