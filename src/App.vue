@@ -7,7 +7,7 @@
         <span class="brand-logo"><img :src="AVATARS[1]" alt="마실 로고"></span>
         <span class="brand-text">
           <span class="brand-name">마실</span>
-          <span class="brand-tagline">로그인 없는 지역 나들이</span>
+          <span class="brand-tagline">로그인 없는 서울 나들이</span>
         </span>
       </div>
       <nav class="nav">
@@ -20,10 +20,10 @@
 
       <!-- 히어로 (보라팀 원본 정적 히어로) -->
       <section class="hero">
-        <div class="kicker">계정 없이 · 알고리즘 없이 · 그냥 지도로</div>
+        <div class="kicker">회원가입 없이 · 알고리즘 없이 · 바로</div>
         <h1>동네 이야기는 피드가 아니라<br><em>지도</em>에 있어야 합니다.</h1>
         <p>가볼 곳·축제·맛집 정보가 SNS 계정과 알고리즘 안에 갇혀 있어요.<br>
-           마실은 <b>로그인도, 팔로우도 필요 없이</b> 서울 곳곳의 정보를 지도와 달력으로 펼쳐 봅니다.</p>
+           <span class="ln">마실에서는 <b>로그인, 팔로우 없이도</b> 서울 곳곳의 정보를 지도와 달력으로 펼쳐 볼 수 있어요.</span></p>
         <div class="cta">
           <button class="btn btn-solid" @click="go('map')">지도로 둘러보기</button>
           <button class="btn btn-ghost" @click="go('cal')">축제 일정 보기</button>
