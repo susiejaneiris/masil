@@ -129,7 +129,9 @@ import ChatWidget from './components/ChatWidget.vue'
 
 // 홈 화면 시각 팔레트 (보라 파스텔)
 const CAT_PAL = ['#A8A0E8', '#9BD4BE', '#F3C2A0', '#F0AEC5', '#B7A7E6', '#A6C1EC', '#F1B4A6', '#BFD59C']
-const REG_PAL = ['#A8A0E8', '#9BD4BE', '#F3C2A0', '#F0AEC5', '#A6C1EC']
+// 권역 순서(도심·동북·서북·서남·동남)에 맞춰, 범례/지도(ZONES) 색과 같은 계열의 파스텔로 정렬
+// 도심권=파랑 · 동북권=초록 · 서북권=보라 · 서남권=분홍(자홍) · 동남권=주황
+const REG_PAL = ['#A6C1EC', '#9BD4BE', '#A8A0E8', '#F0AEC5', '#F3C2A0']
 
 export default {
   name: 'App',

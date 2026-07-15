@@ -225,7 +225,8 @@ export default {
       '서남권': ['양천구','강서구','구로구','금천구','영등포구','동작구','관악구'],
       '동남권': ['서초구','강남구','송파구','강동구'],
     };
-    const ZONE_COLOR = { '도심권':'#A8A0E8','동북권':'#9BD4BE','서북권':'#F3C2A0','서남권':'#F0AEC5','동남권':'#A6C1EC' };
+    // 지도/홈(ZONES)과 같은 계열: 도심권=파랑 · 동북권=초록 · 서북권=보라 · 서남권=분홍(자홍) · 동남권=주황
+    const ZONE_COLOR = { '도심권':'#A6C1EC','동북권':'#9BD4BE','서북권':'#A8A0E8','서남권':'#F0AEC5','동남권':'#F3C2A0' };
     const ZONE_ETC = '#C4C7D0';
     function zoneOf(ev){
       const addr = String(ev?.raw?.addr1 || ev?.place || ev?.raw?.eventplace || '');
